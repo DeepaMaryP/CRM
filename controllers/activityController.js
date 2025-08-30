@@ -3,7 +3,7 @@ import { createActivityService, deleteActivityService, getActivityWithId, getAll
 
 export const createActivity = async (req, res) => {
     const result = await createActivityService(req.body)
-    if (result) {
+    if (result.success) {
         return res.status(201).json({ success: true, message: "Activity created successfully" })
     } else {
         return new Error('Failed to create new Activity')

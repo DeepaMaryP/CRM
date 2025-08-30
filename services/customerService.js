@@ -4,10 +4,14 @@ export const createCustomerService = async (data) => {
     try {
         let newCustomer = new Customer(data);
         newCustomer = await newCustomer.save();
-        return {success : true}
+        return { success: true }
     } catch (error) {
         console.log(error);
-        return {success : false}
+        return {
+            success: false,
+            message: error.message || "Failed to create customer",
+            errors: error.errors || null, // contains field-level details (phone, email etc.)
+        };
     }
 }
 
@@ -45,17 +49,20 @@ export const updateCustomerService = async (id, data) => {
 
     } catch (error) {
         console.log(error);
-        return { success: false }
-
+         return {
+            success: false,
+            message: error.message || "Failed to update customer",
+            errors: error.errors || null, // contains field-level details (phone, email etc.)
+        };
     }
 }
 
-export const deleteCustomerService = async(id) =>{
+export const deleteCustomerService = async (id) => {
     try {
-       await Customer.findByIdAndDelete(id)
-       return true;
+        await Customer.findByIdAndDelete(id)
+        return true;
     } catch (error) {
         console.log(error);
-        return false;        
+        return false;
     }
 }

@@ -2,10 +2,15 @@ import { createCustomerService, deleteCustomerService, getAllCustomersService, g
 
 export const createCustomer = async (req, res) => {
     const result = await createCustomerService(req.body)
-    if (result) {
+
+    if (result.success) {
         return res.status(201).json({ success: true, message: "Customer created successfully" })
-    } else {
-        return new Error('Failed to create new Customer')
+    } else {      
+        return res.status(500).json({
+            success: false,
+            message: result.message,
+            errors: result.errors,
+        });
     }
 }
 
@@ -14,7 +19,7 @@ export const getCustomers = async (req, res) => {
     if (response.success)
         return res.status(200).send(response);
     else {
-        return new Error('Failed to get customers')
+        return res.status(500).json({ success: false, message: "Failed to get customers" });
     }
 }
 
@@ -23,24 +28,29 @@ export const getCustomerById = async (req, res) => {
     if (response)
         return res.status(200).send(response);
     else {
-        return new Error('Failed to get customer')
+        return res.status(500).json({ success: false, message: "Failed to get customer" });
     }
 }
 
 export const updateCustomer = async (req, res) => {
     const response = await updateCustomerService(req.params.custId, req.body)
+
     if (response.success) {
         return res.status(200).send(response)
     } else {
-        return new Error('Failed to update customer')
+        return res.status(500).json({
+            success: false,
+            message: result.message,
+            errors: result.errors,
+        });
     }
 }
 
-export const deleteCustomer = async(req,res) =>{
+export const deleteCustomer = async (req, res) => {
     const response = await deleteCustomerService(req.params.custId)
-     if (response) {
-        return res.status(200).json({success:true, message:"Customer deleted successfully"})
+    if (response) {
+        return res.status(200).json({ success: true, message: "Customer deleted successfully" })
     } else {
-        return new Error('Failed to delete customer')
+        return res.status(500).json({ success: false, message: "Failed to delete customer" });
     }
 }

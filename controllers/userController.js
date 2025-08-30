@@ -6,22 +6,23 @@ export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body
         const user = await getUserDetailsWithEmail(email)
-       
+
         if (!user) {
             return res.status(400).json({ success: false, message: "user do not exist" })
         }
-              
-        const isValidUser = await bcrypt.compare(password, user.passwordHash)        
+
+        const isValidUser = await bcrypt.compare(password, user.passwordHash)
         if (!isValidUser) {
             return res.status(400).json({ success: false, message: "Wrong Password" })
         }
-             
+
         const token = jwt.sign({ name: user.name, email: user.email, id: user._id }, process.env.JWT_SECRET, {
             expiresIn: '1h'
         })
-        res.status(200).json({ success: true, token })
+        res.status(200).json({ success: true, token, name:user.name })
     } catch (error) {
-        return new Error('Failed to signin')
+        console.log(error);
+        return res.status(500).json({ success: false, message: "Failed to sign in" });
     }
 }
 
@@ -33,10 +34,10 @@ export const createUser = async (req, res) => {
     data.passwordHash = updatedPassword
 
     const result = await createUserService(data)
-    if (result) {
+    if (result.success) {
         return res.status(201).json({ success: true, message: "User created successfully" })
     } else {
-        return new Error('Failed to create new user')
+        return res.status(500).json({ success: false, message: "Failed to create new user" });
     }
 }
 
@@ -46,7 +47,7 @@ export const getUsers = async (req, res) => {
     if (response.success)
         return res.status(200).send(response);
     else {
-        return new Error('Failed to get users')
+        return res.status(500).json({ success: false, message: "Failed to get users" });
     }
 }
 
@@ -55,7 +56,7 @@ export const getUserById = async (req, res) => {
     if (response)
         return res.status(200).send(response);
     else {
-        return new Error('Failed to get user')
+        return res.status(500).json({ success: false, message: "Failed to get user" });
     }
 }
 
@@ -64,7 +65,7 @@ export const updateUser = async (req, res) => {
     if (response.success) {
         return res.status(200).send(response)
     } else {
-        return new Error('Failed to update user')
+        return res.status(500).json({ success: false, message: "Failed to update user" });
     }
 }
 
@@ -73,6 +74,6 @@ export const deleteUser = async (req, res) => {
     if (response) {
         return res.status(200).json({ success: true, message: "User deleted successfully" })
     } else {
-        return new Error('Failed to delete user')
+        return res.status(500).json({ success: false, message: "Failed to delete user" });       
     }
 }

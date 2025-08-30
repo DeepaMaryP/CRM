@@ -6,12 +6,14 @@ import userRouter from './routes/userRouter.js'
 import customerRouter from './routes/customerRouter.js'
 import caseRouter from './routes/caseRouter.js'
 import activityRouter from './routes/activityRouter.js'
+import cors from 'cors'
 
 configDotenv()
 connectToDatabase() 
 
 const app = express()
 app.use(express.json())
+app.use(cors())
 
 app.use('/api/role', roleRouter)
 app.use('/api/user', userRouter)

@@ -2,10 +2,10 @@ import { createCaseService, deleteCaseService, getAllCaseService, getCaseWithId,
 
 export const createCase = async (req, res) => {
     const result = await createCaseService(req.body)
-    if (result) {
+    if (result.success) {
         return res.status(201).json({ success: true, message: "Case created successfully" })
     } else {
-        return new Error('Failed to create new Case')
+        return res.status(500).json({ success: false, message: "Failed to create new Case" });       
     }
 }
 

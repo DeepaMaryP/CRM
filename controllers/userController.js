@@ -19,7 +19,7 @@ export const loginUser = async (req, res) => {
         const token = jwt.sign({ name: user.name, email: user.email, id: user._id }, process.env.JWT_SECRET, {
             expiresIn: '1h'
         })
-        res.status(200).json({ success: true, token, name:user.name })
+        res.status(200).json({ success: true, token, name: user.name })
     } catch (error) {
         console.log(error);
         return res.status(500).json({ success: false, message: "Failed to sign in" });
@@ -29,15 +29,18 @@ export const loginUser = async (req, res) => {
 
 export const createUser = async (req, res) => {
     let data = req.body
-
     const updatedPassword = await bcrypt.hash(data.passwordHash, 10)
     data.passwordHash = updatedPassword
 
     const result = await createUserService(data)
     if (result.success) {
-        return res.status(201).json({ success: true, message: "User created successfully" })
+        return res.status(201).json({ success: true, userName: result.user.email, message: "User created successfully" })
     } else {
-        return res.status(500).json({ success: false, message: "Failed to create new user" });
+       return res.status(500).json({
+            success: false,
+            message: result.message,
+            errors: result.errors,
+        });
     }
 }
 
@@ -74,6 +77,6 @@ export const deleteUser = async (req, res) => {
     if (response) {
         return res.status(200).json({ success: true, message: "User deleted successfully" })
     } else {
-        return res.status(500).json({ success: false, message: "Failed to delete user" });       
+        return res.status(500).json({ success: false, message: "Failed to delete user" });
     }
 }

@@ -49,7 +49,7 @@ export const updateCustomerService = async (id, data) => {
 
     } catch (error) {
         console.log(error);
-         return {
+        return {
             success: false,
             message: error.message || "Failed to update customer",
             errors: error.errors || null, // contains field-level details (phone, email etc.)

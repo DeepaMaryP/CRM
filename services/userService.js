@@ -4,10 +4,14 @@ export const createUserService = async (data) => {
     try {
         let newUser = new User(data);
         newUser = await newUser.save();
-        return {success : true}
+        return {success : true, user:newUser}
     } catch (error) {
-        console.log(error);
-        return {success : false}
+        console.log({error});
+        return {
+            success: false,
+            message: error.message || "Failed to create user",
+            errors: error.errors || null, // contains field-level details (phone, email etc.)
+        };
     }
 }
 
